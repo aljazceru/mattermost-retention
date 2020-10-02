@@ -35,5 +35,8 @@ done < /tmp/mattermost-paths.list
 
 #cleanup after yourself
 rm /tmp/mattermost-paths.list
+
+#cleanup empty data dirs
+find $DATA_PATH -type d -empty -delete
 exit 0
 
