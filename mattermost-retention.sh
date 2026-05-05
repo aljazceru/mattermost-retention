@@ -83,16 +83,17 @@ esac
 
 
 ###
-# delete files
+# delete files safely
 ###
-for fp in `cat /tmp/mattermost-paths.list`
-do
-        if [ -n "$fp" ]; then
-                echo "$DATA_PATH""$fp"
-                $MM_DOCKER_CMD shred -u "$DATA_PATH""$fp"
+while IFS= read -r fp; do
+    if [ -n "$fp" ]; then
+        full_path="${DATA_PATH}${fp}"
+        if [ -f "$full_path" ]; then
+            echo "Shredding: $full_path"
+            $MM_DOCKER_CMD shred -u -n 3 "$full_path" # 3 passes is plenty for modern drives
         fi
-done
-
+    fi
+done < /tmp/mattermost-paths.list
 
 ###
 # cleanup after script execution
